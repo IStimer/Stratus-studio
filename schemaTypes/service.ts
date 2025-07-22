@@ -38,6 +38,13 @@ export default defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
+      name: 'shortDescription',
+      title: 'Description courte',
+      type: 'string',
+      description: 'Description courte pour le slider (max 150 caractères)',
+      validation: (Rule) => Rule.required().max(150),
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',
