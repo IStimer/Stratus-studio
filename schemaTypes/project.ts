@@ -12,6 +12,13 @@ export default defineType({
       validation: Rule => Rule.required()
     }),
     defineField({
+      name: 'catchPhrase',
+      title: 'Phrase d\'accroche',
+      type: 'string',
+      description: 'Petite phrase en gras sous le titre',
+      validation: Rule => Rule.required()
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -44,8 +51,14 @@ export default defineType({
       validation: Rule => Rule.required()
     }),
     defineField({
+      name: 'showBadge',
+      title: 'Afficher le bandeau CRÉATION CONCEPTION PRODUCTION',
+      type: 'boolean',
+      initialValue: true
+    }),
+    defineField({
       name: 'mainImage',
-      title: 'Image principale',
+      title: 'Image principale (fullscreen)',
       type: 'image',
       options: {
         hotspot: true,
@@ -60,53 +73,153 @@ export default defineType({
       validation: Rule => Rule.required()
     }),
     defineField({
-      name: 'gallery',
-      title: 'Galerie d\'images',
+      name: 'tagline',
+      title: 'Tagline',
+      type: 'string',
+      description: 'Tagline qui apparaît entre les deux premiers blocs de texte'
+    }),
+    defineField({
+      name: 'contentBlocks',
+      title: 'Blocs de contenu',
       type: 'array',
       of: [
         {
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
+          type: 'object',
+          name: 'textBlock',
+          title: 'Bloc de texte',
           fields: [
             {
-              name: 'alt',
-              type: 'string',
-              title: 'Texte alternatif',
+              name: 'content',
+              title: 'Contenu',
+              type: 'array',
+              of: [
+                {
+                  type: 'block',
+                  styles: [{title: 'Normal', value: 'normal'}],
+                  lists: [],
+                  marks: {
+                    decorators: [
+                      {title: 'Strong', value: 'strong'},
+                      {title: 'Emphasis', value: 'em'}
+                    ],
+                    annotations: []
+                  }
+                }
+              ]
+            }
+          ],
+          preview: {
+            select: {
+              content: 'content'
+            },
+            prepare({content}) {
+              const text = content?.[0]?.children?.[0]?.text || ''
+              return {
+                title: 'Bloc de texte',
+                subtitle: text.slice(0, 50) + (text.length > 50 ? '...' : '')
+              }
+            }
+          }
+        },
+        {
+          type: 'object',
+          name: 'imageBlock',
+          title: 'Bloc d\'image(s)',
+          fields: [
+            {
+              name: 'images',
+              title: 'Images',
+              type: 'array',
+              of: [
+                {
+                  type: 'image',
+                  options: {
+                    hotspot: true,
+                  },
+                  fields: [
+                    {
+                      name: 'alt',
+                      type: 'string',
+                      title: 'Texte alternatif',
+                    },
+                    {
+                      name: 'caption',
+                      type: 'string',
+                      title: 'Légende',
+                    }
+                  ]
+                }
+              ],
+              validation: Rule => Rule.min(1).max(3)
             },
             {
-              name: 'caption',
+              name: 'layout',
+              title: 'Disposition',
               type: 'string',
-              title: 'Légende',
+              options: {
+                list: [
+                  {title: 'Une image', value: 'single'},
+                  {title: 'Deux images côte à côte', value: 'double'},
+                  {title: 'Trois images', value: 'triple'}
+                ]
+              },
+              initialValue: 'single'
             }
-          ]
-        }
-      ]
-    }),
-    defineField({
-      name: 'description',
-      title: 'Description courte',
-      type: 'text',
-      rows: 3,
-      validation: Rule => Rule.required()
-    }),
-    defineField({
-      name: 'fullDescription',
-      title: 'Description complète',
-      type: 'array',
-      of: [
+          ],
+          preview: {
+            select: {
+              images: 'images',
+              layout: 'layout'
+            },
+            prepare({images, layout}) {
+              const count = images?.length || 0
+              return {
+                title: 'Bloc d\'image(s)',
+                subtitle: `${count} image(s) - Disposition: ${layout}`,
+                media: images?.[0]
+              }
+            }
+          }
+        },
         {
-          title: 'Block',
-          type: 'block',
-          styles: [{title: 'Normal', value: 'normal'}],
-          lists: [],
-          marks: {
-            decorators: [
-              {title: 'Strong', value: 'strong'},
-              {title: 'Emphasis', value: 'em'}
-            ],
-            annotations: []
+          type: 'object',
+          name: 'videoBlock',
+          title: 'Bloc vidéo',
+          fields: [
+            {
+              name: 'video',
+              title: 'Fichier vidéo',
+              type: 'file',
+              options: {
+                accept: 'video/*'
+              }
+            },
+            {
+              name: 'videoUrl',
+              title: 'URL de la vidéo (YouTube, Vimeo)',
+              type: 'url'
+            },
+            {
+              name: 'poster',
+              title: 'Image de couverture',
+              type: 'image',
+              options: {
+                hotspot: true
+              }
+            }
+          ],
+          preview: {
+            select: {
+              poster: 'poster',
+              videoUrl: 'videoUrl'
+            },
+            prepare({poster, videoUrl}) {
+              return {
+                title: 'Bloc vidéo',
+                subtitle: videoUrl || 'Fichier vidéo',
+                media: poster
+              }
+            }
           }
         }
       ]
