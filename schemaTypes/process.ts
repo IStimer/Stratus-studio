@@ -12,6 +12,12 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'titleEn',
+      title: 'Titre en anglais',
+      type: 'string',
+      description: 'Version anglaise du titre',
+    }),
+    defineField({
       name: 'order',
       title: 'Ordre',
       type: 'number',
@@ -24,6 +30,14 @@ export default defineType({
       rows: 2,
       description: 'Description courte du processus',
       validation: (Rule) => Rule.required().max(200),
+    }),
+    defineField({
+      name: 'shortDescriptionEn',
+      title: 'Petite description en anglais',
+      type: 'text',
+      rows: 2,
+      description: 'Version anglaise de la description courte',
+      validation: (Rule) => Rule.max(200),
     }),
     defineField({
       name: 'steps',
@@ -40,10 +54,23 @@ export default defineType({
               validation: (Rule) => Rule.required(),
             },
             {
+              name: 'titleEn',
+              title: 'Titre en anglais',
+              type: 'string',
+              description: 'Version anglaise du titre de l\'étape',
+            },
+            {
               name: 'description',
               title: 'Description',
               type: 'text',
               rows: 2,
+            },
+            {
+              name: 'descriptionEn',
+              title: 'Description en anglais',
+              type: 'text',
+              rows: 2,
+              description: 'Version anglaise de la description',
             },
           ],
         },

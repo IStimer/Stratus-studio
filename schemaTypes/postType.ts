@@ -12,11 +12,23 @@ export const postType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'titleEn',
+      title: 'Titre en anglais',
+      type: 'string',
+      description: 'Version anglaise du titre',
+    }),
+    defineField({
       name: 'catchPhrase',
       title: 'Phrase d\'accroche',
       type: 'string',
       description: 'Petite phrase en gras sous le titre',
       validation: Rule => Rule.required()
+    }),
+    defineField({
+      name: 'catchPhraseEn',
+      title: 'Phrase d\'accroche en anglais',
+      type: 'string',
+      description: 'Version anglaise de la phrase d\'accroche',
     }),
     defineField({
       name: 'slug',
@@ -79,10 +91,24 @@ export const postType = defineType({
       validation: Rule => Rule.required().max(200).warning('Idéalement moins de 200 caractères'),
     }),
     defineField({
+      name: 'excerptEn',
+      title: 'Extrait en anglais',
+      type: 'text',
+      rows: 3,
+      description: 'Version anglaise de l\'extrait',
+      validation: Rule => Rule.max(200).warning('Idéalement moins de 200 caractères'),
+    }),
+    defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
       description: 'Tagline qui apparaît entre les blocs de contenu'
+    }),
+    defineField({
+      name: 'taglineEn',
+      title: 'Tagline en anglais',
+      type: 'string',
+      description: 'Version anglaise du tagline'
     }),
     defineField({
       name: 'contentBlocks',
